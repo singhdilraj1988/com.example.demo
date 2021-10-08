@@ -21,7 +21,7 @@ timeout(45) {
     gitCommitDate = "unknown"	
     branchName = branchName.reverse().take(62).reverse().replaceAll('/', '-')
 	String imageName = "fantito/jdk11-maven-git"
-	node('docker')
+	node
 	{
 	docker.image('fantito/jdk11-maven-git').inside {
 	try {
