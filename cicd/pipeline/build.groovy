@@ -41,9 +41,8 @@ timeout(45) {
                      mvn install                        
                 """                 
         } // end stage Build & Test Project
-        stage("Build and Push Docker Image") {                           
-                   version = readFile("${env.WORKSPACE}/VERSION").split('"')[3]
-                   tag = version + "-" + this.gitCommitDate + "-" + this.gitCommitHash + "-" + env.BUILD_NUMBER
+        stage("Build and Push Docker Image") {                                            
+                   tag = "-" + this.gitCommitDate + "-" + this.gitCommitHash + "-" + env.BUILD_NUMBER
                    echo " docker tag is set : $tag"
                    docker.withRegistry("singhdilraj1988/com.example.demo", "DockerHubCredential") {
                    def dockerfile = 'cicd/docker/Dockerfile'
