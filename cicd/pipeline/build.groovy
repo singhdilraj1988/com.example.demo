@@ -14,12 +14,10 @@ properties([
 timeout(45) {
     String repositoryName = "com.example.demo"
     String podName = repositoryName.take(50)
-    String nodeLabel = "n" + env.BUILD_TAG.reverse().take(62).reverse().replaceAll('%2F', '-').replaceAll(/^\-/, '')
-    String branchName = env.BRANCH_NAME
+    String nodeLabel = "n" + env.BUILD_TAG.reverse().take(62).reverse().replaceAll('%2F', '-').replaceAll(/^\-/, '')    
     String buildNumber = env.BUILD_NUMBER 
 	gitCommitHash = "unknown"
-    gitCommitDate = "unknown"	
-    branchName = branchName.reverse().take(62).reverse().replaceAll('/', '-')
+    gitCommitDate = "unknown"	    
 	node
 	{
 	docker.image('singhdilraj1988/dk11-mvn-git-docker:v1.0').inside {
