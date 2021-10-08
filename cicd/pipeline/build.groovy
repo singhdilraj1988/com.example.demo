@@ -20,10 +20,9 @@ timeout(45) {
 	gitCommitHash = "unknown"
     gitCommitDate = "unknown"	
     branchName = branchName.reverse().take(62).reverse().replaceAll('/', '-')
-	String imageName = "fantito/jdk11-maven-git"
 	node
 	{
-	docker.image('fantito/jdk11-maven-git').inside {
+	docker.image('singhdilraj1988/dk11-mvn-git-docker:v1.0').inside {
 	try {
         stage("Clone repo") {
 			checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/singhdilraj1988/com.example.demo.git']]])
@@ -42,9 +41,9 @@ timeout(45) {
                 """                 
         } // end stage Build & Test Project
         stage("Build and Push Docker Image") {                                            
-                   tag = "-" + this.gitCommitDate + "-" + this.gitCommitHash + "-" + env.BUILD_NUMBER
+                   tag = this.gitCommitDate + "-" + this.gitCommitHash + "-" + env.BUILD_NUMBER
                    echo " docker tag is set : $tag"
-                   docker.withRegistry("singhdilraj1988/com.example.demo", "DockerHubCredential") {
+                   docker.withRegistry("https://registry.hub.docker.com", "docker-hub-cred") {
                    def dockerfile = 'cicd/docker/Dockerfile'
                    def customImage = docker.build("singhdilraj1988/com.example.demo:$tag","-f ${dockerfile} .")
                    customImage.push()
