@@ -26,16 +26,10 @@ timeout(45) {
 	docker.image('fantito/jdk11-maven-git').inside {
 	try {
         stage("Clone repo") {
-            gitCredentialsId = "crtx-creds-id"
-            gitRepoUrl = "https://github.com/singhdilraj1988/com.example.demo.git"
-            gitBranchName = env.BRANCH_NAME
-            gitRefs = cloneRepository {
-                gitRepoUrl       = this.gitRepoUrl
-                gitCredentialsId = this.gitCredentialsId
-                gitBranchName    = this.gitBranchName
-            }
-			gitCommitHash = sh (script: "git reflog show origin/${env.BRANCH_NAME} --pretty=\'%h\' -n 1",returnStdout: true).trim()
-            gitCommitDate = sh (script: "git reflog show origin/${env.BRANCH_NAME} --pretty=\'%gd\' --date=format:%Y%m%d%H%M -n 1",returnStdout: true).trim().replace("origin/${env.BRANCH_NAME}@{",'').replace("}",'')
+			checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/singhdilraj1988/com.example.demo.git']]])
+            sh "ls -lart ./*"		
+	        gitCommitHash = sh (script: "git reflog show origin/${env.BRANCH_NAME} --pretty=\'%h\' -n 1",returnStdout: true).trim()
+            gitCommitDate = sh (script: "git reflog show origin/${env.BRANCH_NAME} --pretty=\'%gd\' --date=format:%Y%m%d%H%M -n 1",returnStdout: true).trim().replace("origin/${env.BRANCH_NAME}@{",'').replace("}",'')			
         } // end stage Clone repo
  	    stage("Run Code Checkstyle") {
                 sh"""
@@ -51,7 +45,7 @@ timeout(45) {
                    version = readFile("${env.WORKSPACE}/VERSION").split('"')[3]
                    tag = version + "-" + this.gitCommitDate + "-" + this.gitCommitHash + "-" + env.BUILD_NUMBER
                    echo " docker tag is set : $tag"
-                   docker.withRegistry("https://artifactory-pyml-auto-images-public.cto.veritas.com", "crtx-creds-id-token") {
+                   docker.withRegistry("singhdilraj1988/com.example.demo", "DockerHubCredential") {
                    def dockerfile = 'cicd/docker/Dockerfile'
                    def customImage = docker.build("singhdilraj1988/com.example.demo:$tag","-f ${dockerfile} .")
                    customImage.push()
