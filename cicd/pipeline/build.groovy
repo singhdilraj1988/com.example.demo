@@ -12,7 +12,7 @@ properties([
 ])
 
 timeout(45) {
-    String repositoryName = "asup-adrsynchronizer-service"
+    String repositoryName = "com.example.demo"
     String podName = repositoryName.take(50)
     String nodeLabel = "n" + env.BUILD_TAG.reverse().take(62).reverse().replaceAll('%2F', '-').replaceAll(/^\-/, '')
     String branchName = env.BRANCH_NAME
@@ -21,6 +21,9 @@ timeout(45) {
     gitCommitDate = "unknown"	
     branchName = branchName.reverse().take(62).reverse().replaceAll('/', '-')
 	String imageName = "fantito/jdk11-maven-git"
+	node('docker')
+	{
+	docker.image('fantito/jdk11-maven-git').inside {
 	try {
         stage("Clone repo") {
             gitCredentialsId = "crtx-creds-id"
@@ -72,5 +75,6 @@ timeout(45) {
             
         } // end stage Run post-build tasks
     } // end finally      
- 
+	}
+ }
 } // end timeout
