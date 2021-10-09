@@ -1,13 +1,4 @@
-properties([
-    pipelineTriggers([
-        pollSCM('')
-    ]),
-    buildDiscarder(
-        logRotator(
-            daysToKeepStr: '20',
-            artifactDaysToKeepStr: '60'
-        )
-    ),
+properties([    
     disableConcurrentBuilds()
 ])
 
