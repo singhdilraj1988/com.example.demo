@@ -3,10 +3,6 @@ properties([
 ])
 
 timeout(45) {
-    String repositoryName = "com.example.demo"
-    String podName = repositoryName.take(50)
-    String nodeLabel = "n" + env.BUILD_TAG.reverse().take(62).reverse().replaceAll('%2F', '-').replaceAll(/^\-/, '')    
-    String buildNumber = env.BUILD_NUMBER 
 	gitCommitHash = "unknown"
     gitCommitDate = "unknown"	    
 	node
