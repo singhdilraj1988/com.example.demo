@@ -10,7 +10,8 @@ timeout(45) {
 	docker.image('singhdilraj1988/dk11-mvn-git-docker:v1.0').inside {
 	try {
         stage("Clone repo") {
-			checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/singhdilraj1988/com.example.demo.git']]])
+			gitBranchName = env.BRANCH_NAME
+			checkout([$class: 'GitSCM', branches: [[name: this.gitBranchName]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/singhdilraj1988/com.example.demo.git']]])
             sh "ls -lart ./*"		
 	        gitCommitHash = sh (script: "git reflog show origin/${env.BRANCH_NAME} --pretty=\'%h\' -n 1",returnStdout: true).trim()
             gitCommitDate = sh (script: "git reflog show origin/${env.BRANCH_NAME} --pretty=\'%gd\' --date=format:%Y%m%d%H%M -n 1",returnStdout: true).trim().replace("origin/${env.BRANCH_NAME}@{",'').replace("}",'')			
